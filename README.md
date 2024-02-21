@@ -5,7 +5,8 @@ I Tried with the official Document... But it didn't worked.
 So,
 the below is Original code from docs
 
-"" import {
+<code>
+import {
   generateUploadButton,
   generateUploadDropzone,
 } from "@uploadthing/react";
@@ -13,17 +14,20 @@ the below is Original code from docs
 import type { OurFileRouter } from "~/app/api/uploadthing/core";
  
 export const UploadButton = generateUploadButton<OurFileRouter>();
-export const UploadDropzone = generateUploadDropzone<OurFileRouter>(); ""
+export const UploadDropzone = generateUploadDropzone<OurFileRouter>();
+</code>
 
 Modified code...
 
-""  import {
+<code>
+    import {
     generateReactHelpers
   } from "@uploadthing/react/hooks";
    
   import type { OurFileRouter } from "@/app/api/uploadthing/core";
    
-  export const UploadButton = generateReactHelpers<OurFileRouter>();  ""
+  export const UploadButton = generateReactHelpers<OurFileRouter>();
+</code>  
 
 
 "" import {
