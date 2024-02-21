@@ -1,34 +1,134 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# found some errors on uploadThing...
 
-## Getting Started
+I Tried with the official Document... But it didn't worked.
 
-First, run the development server:
+So,
+the below is Original code from docs
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+"" import {
+  generateUploadButton,
+  generateUploadDropzone,
+} from "@uploadthing/react";
+ 
+import type { OurFileRouter } from "~/app/api/uploadthing/core";
+ 
+export const UploadButton = generateUploadButton<OurFileRouter>();
+export const UploadDropzone = generateUploadDropzone<OurFileRouter>(); ""
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Modified code...
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+""  import {
+    generateReactHelpers
+  } from "@uploadthing/react/hooks";
+   
+  import type { OurFileRouter } from "@/app/api/uploadthing/core";
+   
+  export const UploadButton = generateReactHelpers<OurFileRouter>();  ""
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+"" import {
+    generateReactHelpers
+  } from "@uploadthing/react/hooks"; ""
 
-To learn more about Next.js, take a look at the following resources:
+  "/hooks" was added to remove errors
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+original code;
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+import { createRouteHandler } from "uploadthing/next";
+ 
+import { ourFileRouter } from "./core";
+ 
+// Export routes for Next App Router
+export const { GET, POST } = createRouteHandler({
+  router: ourFileRouter,
+  config: { ... },
+});
 
-## Deploy on Vercel
+modified code
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+import { createNextRouteHandler } from "uploadthing/next";
+ 
+import { ourFileRouter } from "./core";
+ 
+// Export routes for Next App Router
+export const { GET, POST } = createNextRouteHandler({
+  router: ourFileRouter,
+  // config: { ... },
+});
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+original code;
+
+""  import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UploadThingError } from "uploadthing/server";
+ 
+const f = createUploadthing();
+ 
+const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+ 
+// FileRouter for your app, can contain multiple FileRoutes
+export const ourFileRouter = {
+  // Define as many FileRoutes as you like, each with a unique routeSlug
+  imageUploader: f({ image: { maxFileSize: "4MB" } })
+    // Set permissions and file types for this FileRoute
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+      const user = await auth(req);
+ 
+      // If you throw, the user will not be able to upload
+      if (!user) throw new UploadThingError("Unauthorized");
+ 
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for userId:", metadata.userId);
+ 
+      console.log("file url", file.url);
+ 
+      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      return { uploadedBy: metadata.userId };
+    }),
+} satisfies FileRouter;
+ 
+export type OurFileRouter = typeof ourFileRouter;  ""
+
+modified code;
+
+""  import { createUploadthing, type FileRouter } from "uploadthing/next";
+// import { UploadThingError } from "uploadthing/next";
+ 
+const f = createUploadthing();
+ 
+const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
+ 
+// FileRouter for your app, can contain multiple FileRoutes
+export const ourFileRouter = {
+  // Define as many FileRoutes as you like, each with a unique routeSlug
+  imageUploader: f({ image: { maxFileSize: "4MB" } })
+    // Set permissions and file types for this FileRoute
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+      const user = await auth(req);
+ 
+      // If you throw, the user will not be able to upload
+      if (!user) throw new Error("Unauthorized");
+ 
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for userId:", metadata.userId);
+ 
+      console.log("file url", file.url);
+ 
+      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+      // return { uploadedBy: metadata.userId };
+    }),
+} satisfies FileRouter;
+ 
+export type OurFileRouter = typeof ourFileRouter;  ""
+
+
+
