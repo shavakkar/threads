@@ -9,7 +9,7 @@ import {
    
   import type { OurFileRouter } from "@/app/api/uploadthing/core";
    
-  export const UploadButton = generateReactHelpers<OurFileRouter>();
+  export const { useUploadThing, uploadFiles } = generateReactHelpers<OurFileRouter>();
 
 // import { generateComponents } from "@uploadthing/react";
  
