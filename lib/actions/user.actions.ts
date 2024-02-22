@@ -23,9 +23,9 @@ export async function updateUser(
         path,
     } : Params    
 ): Promise<void>{
-    connectToDb();
-
+    
     try {
+        connectToDb();
         await User.findOneAndUpdate(
             { id: userId },
             { 
@@ -33,6 +33,7 @@ export async function updateUser(
                 name,
                 bio,
                 image,
+                onboarded: true,
             },
             { upsert: true },
         );
