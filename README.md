@@ -141,4 +141,32 @@ modified code;
         export type OurFileRouter = typeof ourFileRouter;
 </code>
 
-So, follwed with this changes... to bring out functionality... I used these above codes as template and modified little... 
+So, follwed with this changes... to bring out functionality... I used these above codes as template and modified little...
+
+Error 2:
+
+In AccountProfile.tsx file...
+
+At line 83...
+
+<code>
+        if (hasImageChanged) {
+      const imgRes = await startUpload(files);
+
+      if (imgRes && imgRes[0].fileUrl) {
+        values.profile_photo = imgRes[0].fileUrl;
+      }
+    }
+</code>
+
+here... ".fileUrl" function is Deprecated, So to achieve the function we use ".url" as shown below...
+
+<code>
+      if (hasImageChanged) {
+      const imgRes = await startUpload(files);
+
+      if (imgRes && imgRes[0].url) {
+        values.profile_photo = imgRes[0].url;
+      }
+    }
+<code>
